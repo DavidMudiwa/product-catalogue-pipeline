@@ -1,0 +1,30 @@
+# Copy to config.yaml and fill in, or set the equivalent env vars instead
+# (env vars always take precedence over this file).
+#
+# AUTH: kestra-sandbox-492709 has iam.disableServiceAccountKeyCreation
+# enforced (the default for any GCP org created after May 2024), so JSON
+# keys usually aren't obtainable at all. Use one of:
+#
+#   - Local dev: run `gcloud auth application-default login` once, then
+#     leave credentials_path AND impersonate_service_account both unset --
+#     the script falls back to plain ADC automatically.
+#
+#   - Production / scheduled runs (e.g. via Kestra): set
+#     impersonate_service_account below to a service account that has the
+#     BigQuery roles this script needs (roles/bigquery.dataEditor on the
+#     dataset, roles/bigquery.jobUser on the project). Whatever identity
+#     actually runs the script (your user, or an attached SA if running on
+#     GCP infra) needs roles/iam.serviceAccountTokenCreator on that target
+#     service account. No key file is ever created or stored.
+#
+#   - credentials_path is kept only as a legacy fallback for environments
+#     that still issue JSON keys -- leave it unset here.
+
+project_id: kestra-sandbox-492709
+dataset: takealot_raw
+table: products
+# impersonate_service_account: bq-loader@kestra-sandbox-492709.iam.gserviceaccount.com
+chunk_size: 1000
+checkpoint_dir: .checkpoints
+location: US
+max_retries: 5

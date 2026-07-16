@@ -2,6 +2,7 @@ import os
 import logging
 import requests
 import pandas
+import json 
 from datetime import datetime, UTC
 from dotenv import load_dotenv
 
@@ -10,7 +11,6 @@ load_dotenv()  # loads .env file
 URL = os.getenv("TAKEALOT_URL")
 
 PARAMS = {
-    "filter": os.getenv("FILTER"),
     "sort": os.getenv("SORT"),
     "department_slug": os.getenv("DEPARTMENT"),
     "category_slug": os.getenv("CATEGORY"),
