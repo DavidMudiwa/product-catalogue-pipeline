@@ -1,0 +1,39 @@
+==================== 2026-07-17T08:02:44.000549Z | 019f6f19-689b-7c41-ba14-bbae2b69f35a ====================
+08:02:44.000821 [info ]: Installing dbt project and profile setup
+08:02:44.038524 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+08:02:44.039665 [info ]: Success Project created successfully!
+08:02:44.039821 [info ]: Info Project name: product_catalog
+08:02:44.039944 [info ]: Info Project directory: product_catalog
+08:02:44.040413 [info ]: Info Setting up your profile...
+08:02:44.042190 [info ]: Loading ~/.dbt/profiles.yml
+08:02:44.043016 [info ]: Info Creating new profile...
+08:02:52.435001 [info ]: No dbt_cloud.yml found - proceeding without cloud pre-population
+08:04:06.890814 [info ]: Success Profile written to C:\Users\David\.dbt\profiles.yml
+08:04:06.893264 [info ]: Validating profile inputs, adapters, and connection
+
+08:04:06.893498 [info ]: dbt-fusion 2.0.0-preview.177
+08:04:06.902908 [info ]: Started loading project
+08:04:06.954056 [info ]: Loading ~/.dbt/profiles.yml
+08:04:06.979058 [info ]: Finished loading project [  0.08s]
+08:04:06.986990 [info ]: Started debugging
+08:04:06.987564 [info ]: Debugging profile: dev
+08:04:06.987752 [info ]: Debugging dbt version: 2.0.0-preview.177
+08:04:06.988020 [info ]: Debugging platform: windows x86_64 (windows)
+08:04:06.988687 [info ]: Debugging adapter type: bigquery (remote)
+08:04:07.051024 [info ]: Debugging dependencies:
+  git: OK
+08:04:07.056981 [info ]: Debugging connection:
+  "database": "kestra-sandbox-492709",
+  "schema": "products_raw",
+  "method": "oauth",
+  "location": "US",
+  "dataproc_batch": null
+08:04:52.868228 [debug]: Query executed on node unknown:
+select 1 as id
+08:04:52.876198 [info ]: Debugging connection test: OK
+08:04:52.878590 [info ]: Debugged All checks passed!
+08:04:52.880970 [info ]: Finished debugging [ 45.89s]
+08:04:53.993964 [info ]: New version available 2.0.0-preview.200 (run `dbt system update`)
+08:04:54.005306 [info ]: 
+==================== Execution Summary =====================
+Finished 'init' successfully for target 'dev' [2m 10s]
