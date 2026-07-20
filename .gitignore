@@ -4,3 +4,5 @@
 *.json
 .yaml
 .bruin.yml
+.duckdb
+items/

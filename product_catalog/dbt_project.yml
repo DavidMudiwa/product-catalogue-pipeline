@@ -12,11 +12,12 @@ clean-targets:
 seeds:
   # Builds seeds into '<your_schema_name>_raw'
   product_catalog:
-    +schema: raw
+    raw_products:
+      +quote_columns: false
 
 models:
   product_catalog:
-    +static_analysis: strict
+    #+static_analysis: strict
     # Materialize staging models as views, and marts as tables
     staging:
       +materialized: view

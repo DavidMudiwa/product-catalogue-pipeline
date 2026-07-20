@@ -37,3 +37,12 @@ select 1 as id
 08:04:54.005306 [info ]: 
 ==================== Execution Summary =====================
 Finished 'init' successfully for target 'dev' [2m 10s]
+==================== 2026-07-17T08:47:05.099146Z | 019f6f42-0387-7453-82e0-a890412e0bd9 ====================
+08:47:05.099588 [info ]: Installing dbt project and profile setup
+08:47:05.140177 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+08:47:05.140654 [info ]: Success Project created successfully!
+08:47:05.140862 [info ]: Info Project name: products_catalog
+08:47:05.141121 [info ]: Info Project directory: products_catalog
+08:47:05.141312 [info ]: Info Setting up your profile...
+08:47:05.142797 [info ]: Loading ~/.dbt/profiles.yml
+08:47:05.144722 [info ]: Info Creating new profile...
