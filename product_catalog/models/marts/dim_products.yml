@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "SCD2 product dimension. One row per product per version -- a new version is created whenever a tracked attribute changes between scrapes."
+ 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - valid_from
+
+    columns:
+      - name: product_key
+        description: "Surrogate key, unique per product version. Use this (not product_id) as the join key from fact tables if you ever need point-in-time attribute values."
+        tests:
+          - not_null
+          - unique
+
+      - name: product_id
+        description: "Natural key. Repeats across rows when a product has more than one version."
+        tests:
+          - not_null
+ 
+      - name: tsin
+        description: "Takealot SKU id. Current value only, not versioned."
+ 
+      - name: offer_id
+        description: "Winning offer/seller id. Current value only, not versioned -- changes frequently and isn't a product-identity change."
+ 
+      - name: title
+        description: "Product title as of this version."
+        tests:
+          - not_null
+ 
+      - name: brand
+        description: "Brand as of this version."
+ 
+      - name: slug
+        description: "URL slug as of this version."
+ 
+      - name: product_url
+        description: "Product URL as of this version."
+ 
+      - name: department_slug
+        description: "Department slug as of this version."
+ 
+      - name: category_slug
+        description: "Category slug as of this version."
+ 
+      - name: department_name
+        description: "Department display name as of this version."
+ 
+      - name: category_name
+        description: "Category display name as of this version."
+ 
+      - name: valid_from
+        description: "Timestamp (scraped_at) this version first became true."
+        tests:
+          - not_null
+ 
+      - name: valid_to
+        description: "Timestamp this version stopped being true. NULL for the current version."
+ 
+      - name: is_current
+        description: "True for exactly one row per product_id -- the version presently in effect."
+        tests:
+          - not_null
