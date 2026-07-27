@@ -1,0 +1,78 @@
+version: 2
+
+models:
+- name: fct_review_snapshots
+  description: "Fact table capturing product review snapshots over time."
+
+  tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - product_id
+        - scraped_at
+
+  columns:
+
+  - name: product_id
+    description: "Foreign key to the dim_products table."
+    tests:
+    - relationships:
+        arguments:
+          to: ref('dim_products')
+          field: product_id
+    - not_null
+
+  - name: rating
+    description: "Average customer rating for the product."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 5
+
+  - name: reviews
+    description: "Total number of customer reviews."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: rating_1_star
+    description: "Number of 1-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: rating_2_star
+    description: "Number of 2-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: rating_3_star
+    description: "Number of 3-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: rating_4_star
+    description: "Number of 4-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: rating_5_star
+    description: "Number of 5-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+
+  - name: scraped_at
+    description: "Timestamp when the product record was scraped from the source."
+    tests:
+    - not_null

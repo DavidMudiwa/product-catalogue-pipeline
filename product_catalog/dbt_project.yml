@@ -2,19 +2,20 @@ name: product_catalog
 
 profile: product_catalog
 
-seed-paths: ["seeds"]
-model-paths: ["models"]
-macro-paths: ["macros"]
-test-paths: ["tests"]
+seed-paths: [ "seeds" ]
+model-paths: [ "models" ]
+macro-paths: [ "macros" ]
+test-paths: [ "tests" ]
 clean-targets:
-  - "target"
-  - "dbt_packages"
+- "target"
+- "dbt_packages"
 
 seeds:
   # Builds seeds into '<your_schema_name>_raw'
   product_catalog:
     raw_products:
       +quote_columns: false
+      +enabled: "{{ target.name == 'dev' }}"
 
 models:
   product_catalog:
@@ -23,4 +24,4 @@ models:
     staging:
       +materialized: view
     marts:
-      +materialized: table
+      +materialized: incremental

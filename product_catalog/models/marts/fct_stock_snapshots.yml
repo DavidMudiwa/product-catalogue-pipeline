@@ -1,0 +1,44 @@
+version: 2
+
+models:
+- name: fct_stock_snapshots
+  description: "Fact table capturing stock snapshots over time."
+
+  tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - product_id
+        - scraped_at
+
+  columns:
+  - name: product_id
+    description: "Foreign key to the dim_products table."
+    tests:
+    - relationships:
+        arguments:
+          to: ref('dim_products')
+          field: product_id
+    - not_null
+
+  - name: scraped_at
+    description: "Timestamp when the price snapshot was taken."
+    tests:
+    - not_null
+
+  - name: stock_status
+    description: "Textual stock availability status as reported by the source."
+
+  - name: in_stock
+    description: "Indicates whether the product is currently in stock."
+    tests:
+    - accepted_values:
+        values: [ true, false ]
+        quote: false
+
+  - name: is_preorder
+    description: "Indicates whether the product is available for preorder."
+    tests:
+    - accepted_values:
+        values: [ true, false ]
+        quote: false

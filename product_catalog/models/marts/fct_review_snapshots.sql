@@ -7,15 +7,16 @@ with stg_products as (
     select * from {{ ref('stg_products') }}
 )
 
-select
+select 
     product_id,
-    scraped_at,
-    price_min,
-    price_max,
-    listing_price,
-    pretty_price,
-    discount_pct,
-    is_multi_offer
+    rating,
+    reviews,
+    rating_1_star,
+    rating_2_star,
+    rating_3_star,
+    rating_4_star,
+    rating_5_star,
+    scraped_at
 from stg_products
 
 {% if is_incremental() %}

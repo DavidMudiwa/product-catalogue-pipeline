@@ -1,163 +1,176 @@
 version: 2
 
 models:
-  - name: stg_products
-    description: "Cleaned and standardized product data from the raw source."
+- name: stg_products
+  description: "Cleaned and standardized product data from the raw source."
 
+  tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - product_id
+        - scraped_at
+
+  columns:
+  - name: product_id
+    description: "Unique identifier for the product."
     tests:
-      - dbt_utils.unique_combination_of_columns:
-          arguments:
-            combination_of_columns:
-              - product_id
-              - scraped_at
+    - not_null
 
-    columns:
-      - name: product_id
-        description: "Unique identifier for the product."
-        tests:
-          - not_null
+  - name: tsin
+    description: "Unique product identifier assigned by the source platform."
+    tests:
+    - not_null
 
-      - name: tsin
-        description: "Unique product identifier assigned by the source platform."
-        tests:
-          - not_null
+  - name: offer_id
+    description: "Identifier for the specific offer associated with the product."
 
-      - name: offer_id
-        description: "Identifier for the specific offer associated with the product."
+  - name: title
+    description: "Product title as displayed on the source platform."
+    tests:
+    - not_null
 
-      - name: title
-        description: "Product title as displayed on the source platform."
-        tests:
-          - not_null
+  - name: brand
+    description: "Brand or manufacturer of the product."
 
-      - name: brand
-        description: "Brand or manufacturer of the product."
+  - name: slug
+    description: "URL-friendly version of the product title."
 
-      - name: slug
-        description: "URL-friendly version of the product title."
+  - name: product_url
+    description: "Canonical URL of the product page."
 
-      - name: product_url
-        description: "Canonical URL of the product page."
+  - name: department_slug
+    description: "URL-friendly identifier for the department."
 
-      - name: department_slug
-        description: "URL-friendly identifier for the department."
+  - name: category_slug
+    description: "URL-friendly identifier for the product category."
 
-      - name: category_slug
-        description: "URL-friendly identifier for the product category."
+  - name: department_name
+    description: "Name of the department the product belongs to."
 
-      - name: department_name
-        description: "Name of the department the product belongs to."
+  - name: category_name
+    description: "Name of the category the product belongs to."
 
-      - name: category_name
-        description: "Name of the category the product belongs to."
+  - name: price_min
+    description: "Lowest available selling price for the product."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: price_min
-        description: "Lowest available selling price for the product."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: price_max
+    description: "Highest available selling price for the product."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: price_max
-        description: "Highest available selling price for the product."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: listing_price
+    description: "Original or listed price before any discounts."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: listing_price
-        description: "Original or listed price before any discounts."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: pretty_price
+    description: "Formatted price string displayed to customers."
 
-      - name: pretty_price
-        description: "Formatted price string displayed to customers."
+  - name: discount_pct
+    description: "Percentage discount applied to the product."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
 
-      - name: discount_pct
-        description: "Percentage discount applied to the product."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 100
+  - name: is_multi_offer
+    description: "Indicates whether multiple offers exist for the product."
+    tests:
+    - accepted_values:
+        arguments:
+          values: [ true, false ]
+          quote: false
 
-      - name: is_multi_offer
-        description: "Indicates whether multiple offers exist for the product."
-        tests:
-          - accepted_values:
-              arguments:
-                values: [true, false]
+  - name: in_stock
+    description: "Indicates whether the product is currently in stock."
+    tests:
+    - accepted_values:
+        arguments:
+          values: [ true, false ]
+          quote: false
 
-      - name: in_stock
-        description: "Indicates whether the product is currently in stock."
-        tests:
-          - accepted_values:
-              arguments:
-                values: [true, false]
+  - name: stock_status
+    description: "Textual stock availability status."
 
-      - name: stock_status
-        description: "Textual stock availability status."
+  - name: is_preorder
+    description: "Indicates whether the product is available for preorder."
+    tests:
+    - accepted_values:
+        arguments:
+          values: [ true, false ]
+          quote: false
 
-      - name: is_preorder
-        description: "Indicates whether the product is available for preorder."
-        tests:
-          - accepted_values:
-              arguments:
-                values: [true, false]
+  - name: rating
+    description: "Average customer rating for the product."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 5
 
-      - name: rating
-        description: "Average customer rating for the product."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
-                max_value: 5
+  - name: reviews
+    description: "Total number of customer reviews."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: reviews
-        description: "Total number of customer reviews."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: rating_1_star
+    description: "Number of 1-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: rating_1_star
-        description: "Number of 1-star ratings received."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: rating_2_star
+    description: "Number of 2-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: rating_2_star
-        description: "Number of 2-star ratings received."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: rating_3_star
+    description: "Number of 3-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: rating_3_star
-        description: "Number of 3-star ratings received."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: rating_4_star
+    description: "Number of 4-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: rating_4_star
-        description: "Number of 4-star ratings received."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: rating_5_star
+    description: "Number of 5-star ratings received."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
 
-      - name: rating_5_star
-        description: "Number of 5-star ratings received."
-        tests:
-          - dbt_utils.accepted_range:
-              arguments:
-                min_value: 0
+  - name: scraped_at
+    description: "Timestamp when the product record was scraped from the source."
+    tests:
+    - not_null
 
-      - name: scraped_at
-        description: "Timestamp when the product record was scraped from the source."
-        tests:
-          - not_null
+  - name: _source_file
+    description: "Audit column added by the loader: the CSV filename this row was loaded from."
+    tests:
+    - not_null
+
+  - name: _loaded_at
+    description: "Timestamp when the product record was loaded into the warehouse."
+    tests:
+    - not_null

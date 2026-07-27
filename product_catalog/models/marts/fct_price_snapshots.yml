@@ -5,56 +5,57 @@ models:
   description: "Fact table capturing product price snapshots over time."
 
   tests:
-    - dbt_utils.unique_combination_of_columns:
-        arguments:
-          combination_of_columns:
-            - product_id
-            - scraped_at
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - product_id
+        - scraped_at
 
   columns:
-    - name: product_id
-      description: "Foreign key to the dim_products table."
-      tests:
-        - not_null
+  - name: product_id
+    description: "Foreign key to the dim_products table."
+    tests:
+    - relationships:
+        arguments:
+          to: ref('dim_products')
+          field: product_id
+    - not_null
 
-    - name: scraped_at
-      description: "Timestamp when the price snapshot was taken."
-      tests:
-        - not_null
+  - name: scraped_at
+    description: "Timestamp when the price snapshot was taken."
+    tests:
+    - not_null
 
-    - name: listing_price
-      description: "The listed price of the product at the time of scraping."
-      tests:
-        - dbt_utils.expression_is_true:
-            arguments:
-              expression: ">=0"
+  - name: listing_price
+    description: "The listed price of the product at the time of scraping."
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: ">=0"
 
-    - name: price_min
-      description: "The min price of the product at the time of scraping."
-      tests:
-        - dbt_utils.expression_is_true:
-            arguments:
-              expression: ">=0"
+  - name: price_min
+    description: "The min price of the product at the time of scraping."
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: ">=0"
 
-    - name: price_max
-      description: "The max price of the product at the time of scraping."
-      tests:
-        - dbt_utils.expression_is_true:
-            arguments:
-              expression: ">=0"
+  - name: price_max
+    description: "The max price of the product at the time of scraping."
+    tests:
+    - dbt_utils.expression_is_true:
+        expression: ">=0"
 
-    - name: discount_pct
-      description: "The discount percentage applied to the product at the time of scraping."
-      tests:
-        - dbt_utils.accepted_range:
-            arguments:
-              min_value: 0
-              max_value: 100
+  - name: discount_pct
+    description: "The discount percentage applied to the product at the time of scraping."
+    tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 100
 
-    - name: is_multi_offer
-      description: "Indicates whether multiple offers exist for the product."
-      tests:
-        - accepted_values:
-            arguments:
-              values: [true, false]
-              
+  - name: is_multi_offer
+    description: "Indicates whether multiple offers exist for the product."
+    tests:
+    - accepted_values:
+        arguments:
+          values: [ true, false ]
+          quote: false

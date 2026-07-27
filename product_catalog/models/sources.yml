@@ -1,13 +1,21 @@
 version: 2
 
 sources:
-  - name: ecom_products
-    description: "Products catalog data."
-    schema: products_raw
-    tables:
-      - name: raw_products
-        description: "Raw product catalog data ingested from the e-commerce source."
-        loaded_at_field: scraped_at 
-        freshness:
-          warn_after: {count: 26, period: hour}
-          error_after: {count: 50, period: hour}
+- name: ecom_products
+  description: "Products catalog data."
+  schema: products_raw
+  tables:
+  - name: raw_products
+    description: "Raw product catalog data ingested from the e-commerce source."
+    loaded_at_field: scraped_at
+    freshness:
+      warn_after: { count: 26, period: hour }
+      error_after: { count: 50, period: hour }
+
+- name: prod_ecom
+  description: "Production data for products catalog"
+  database: kestra-sandbox-492709
+  schema: products_raw
+  tables:
+  - name: products
+    description: "Raw product catalog data ingested from the e-commerce source."
