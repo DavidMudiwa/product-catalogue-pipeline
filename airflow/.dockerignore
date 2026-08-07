@@ -1,0 +1,36 @@
+# Local Python/uv artifacts -- rebuilt fresh inside the image
+.venv/
+__pycache__/
+*.pyc
+
+# Airflow lives in a subfolder of this project but is its own separate
+# Docker Compose stack with its own Dockerfile -- it doesn't belong inside
+# the scrapper image at all (would just bloat it and copy in Airflow's own
+# generated dags/logs/ directories for no reason).
+airflow/
+
+# dbt build artifacts -- regenerated on every dbt run, shouldn't be baked in
+product_catalog/target/
+product_catalog/dbt_packages/
+product_catalog/logs/
+
+# Local dev database -- this is dev-only state, never belongs in an image
+product_catalog/dev.duckdb
+
+# Never bake credentials or local env config into an image layer
+.env
+*.json
+!package-lock.json
+
+# VCS / editor noise
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Scraper output CSVs at the project root -- these are runtime outputs, not
+# build inputs. The dbt seed CSV is explicitly kept, since dbt needs it
+# inside the image for `--target dev` to work.
+/*.csv
+!product_catalog/seeds/*.csv
+.checkpoints/

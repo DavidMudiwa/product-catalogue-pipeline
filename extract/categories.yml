@@ -1,0 +1,56 @@
+categories:
+  - name: TVs
+    department_slug: tv-audio-video
+    category_slug: tvs-25953
+
+  - name: Smart Watches
+    department_slug: cellular-gps
+    category_slug: smart-watches-27389
+
+  - name: Men's Fashion
+    department_slug: fashion
+    category_slug: men-32752
+
+  - name: Clothing
+    department_slug: fashion
+    category_slug: clothing-32804
+
+  - name: Fragrance
+    department_slug: beauty
+    category_slug: fragrance-24977
+
+  - name: Body Care
+    department_slug: beauty
+    category_slug: body-care-24979
+
+  - name: Laptops
+    department_slug: computers
+    category_slug: laptops-27404
+
+  - name: Sports Clothing
+    department_slug: sport
+    category_slug: sport-clothing-24608
+
+  - name: Homeware
+    department_slug: home-kitchen
+    category_slug: homeware-26000
+
+  - name: Stationery
+    department_slug: office-stationery
+    category_slug: stationery-26550
+
+  - name: Automotive Maintenance & Service
+    department_slug: automotive
+    category_slug: maintenance-and-service-25855
+
+  - name: Groceries
+    department_slug: household-food-beverages
+    category_slug: groceries-31737
+
+  - name: Home Decor
+    department_slug: home-kitchen
+    category_slug: home-decor-27140
+
+  - name: Small Kitchen Appliances
+    department_slug: home-kitchen
+    category_slug: small-kitchen-appliances-25739

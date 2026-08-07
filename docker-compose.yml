@@ -1,0 +1,38 @@
+services:
+  scrapper:
+    build: .
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      # Points google-auth at the mounted ADC file below, explicitly --
+      # more reliable than relying on HOME/well-known-path matching inside
+      # the container.
+      GOOGLE_APPLICATION_CREDENTIALS: /gcp/application_default_credentials.json
+      # Tells dbt where to find profiles.yml inside the container, since it
+      # normally looks in ~/.dbt/ -- pointed at the mounted directory below.
+      DBT_PROFILES_DIR: /app/.dbt
+    volumes:
+      # ADC credentials (from `gcloud auth application-default login`) live
+      # at C:\Users\David\AppData\Roaming\gcloud\application_default_credentials.json
+      # on the Windows side -- reachable from WSL via /mnt/c. Mounted
+      # read-only; this is the container equivalent of the no-JSON-key auth
+      # setup we used for the loader script -- nothing is ever baked into
+      # the image, and this stays out of any image layer.
+      - ${GCLOUD_ADC_PATH:-/mnt/c/Users/David/AppData/Roaming/gcloud/application_default_credentials.json}:/gcp/application_default_credentials.json:ro
+
+      # profiles.yml lives at C:\Users\David\.dbt\profiles.yml on the Windows
+      # side -- reachable from WSL at /mnt/c/Users/David/.dbt/profiles.yml.
+      # It has no secrets in it (just adapter/project/dataset config -- auth
+      # is entirely via the ADC mount above), so mounting straight from
+      # dbt's normal Windows config location is fine.
+      - ${DBT_PROFILES_HOST_PATH:-/mnt/c/Users/David/.dbt/profiles.yml}:/app/.dbt/profiles.yml:ro
+
+      # Scraper output and checkpoints persist on the host across container
+      # runs, instead of being lost when the container exits.
+      - ./scraped_data:/app/scraped_data
+      - ./.checkpoints:/app/.checkpoints
+
+      # dbt's local dev database persists across runs too, rather than
+      # rebuilding from the seed every single time.
+      - ./product_catalog/dev.duckdb:/app/product_catalog/dev.duckdb

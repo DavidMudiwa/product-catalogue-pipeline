@@ -1,0 +1,96 @@
+# Local Airflow 3.x (LocalExecutor) on Docker -- BigQuery version.
+# Airflow 3 differences vs 2.x: webserver -> api-server, a separate dag-processor,
+# and the FAB auth manager for classic admin/admin login.
+#   cp .env.example .env   # fill in paths for your machine
+#   docker compose build && docker compose up -d   # UI: http://localhost:8080 (admin/admin)
+x-airflow-common: &airflow-common
+  build: .
+  
+  environment: &airflow-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+    AIRFLOW__CORE__FERNET_KEY: ''
+    # Airflow 3 signs inter-component (execution API) calls with this JWT secret:
+    AIRFLOW__API_AUTH__JWT_SECRET: 'change-me-please-a-random-secret'
+    # CRITICAL in multi-container Airflow 3: tasks reach the Execution API by the api-server's
+    # SERVICE NAME, not localhost. Without this, tasks die -> "state mismatch ... failed".
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://apiserver:8080/execution/'
+    # BigQuery auth: plain ADC, no service-account JSON key -- consistent with
+    # the rest of this project (kestra-sandbox-492709 has key creation disabled
+    # by org policy anyway). Points at the mounted credentials file below.
+    # Neither dbt (profiles.yml uses method: oauth) nor the loader script go
+    # through an Airflow Connection object, so there's no AIRFLOW_CONN_* var
+    # needed here -- unlike the Snowflake version, which routed auth through
+    # Airflow's own connection system.
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/.gcp/application_default_credentials.json
+    GOOGLE_CLOUD_PROJECT: ${BQ_PROJECT_ID:-kestra-sandbox-492709}
+    # dbt (running from its own venv, see Dockerfile) reads profiles.yml from here:
+    DBT_PROFILES_DIR: /opt/airflow/.dbt
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - /var/run/docker.sock:/var/run/docker.sock
+    # Your whole scraper project -- covers scrapv2.py, load/loader.py,
+    # pyproject.toml + uv.lock (for `uv run` tasks), and product_catalog/
+    # (the dbt project) all in one mount, instead of two separate ones.
+    - ..:/opt/airflow/scrapper
+    # ADC credentials + dbt profiles, read-only -- same mounting pattern
+    # used in the scraper project's own docker-compose.yml.
+    - ${GCLOUD_ADC_PATH:-/mnt/c/Users/David/AppData/Roaming/gcloud/application_default_credentials.json}:/opt/airflow/.gcp/application_default_credentials.json:ro
+    - ${DBT_PROFILES_HOST_PATH:-/mnt/c/Users/David/.dbt/profiles.yml}:/opt/airflow/.dbt/profiles.yml:ro
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - airflow db migrate && airflow users create --username admin --password admin --firstname a --lastname b --role Admin --email admin@example.com
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  apiserver:
+    <<: *airflow-common
+    command: api-server          # Airflow 3: replaces `webserver`
+    ports: ["8080:8080"]
+    restart: always
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  dag-processor:
+    <<: *airflow-common
+    command: dag-processor       # Airflow 3: DAG parsing is its own component
+    restart: always
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
