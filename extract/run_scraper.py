@@ -8,7 +8,6 @@ reported in the summary at the end.
 
 Usage:
     uv run extract/run_scraper.py   --config extract/categories.yml   --output-dir scraped_data   --max-pages 1   --delay 2.0   --delay-between-categories 5.0
-    python run_scrapers.py --config categories.yml --output-dir scraped_data
 """
 
 from __future__ import annotations

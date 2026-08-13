@@ -26,6 +26,9 @@ x-airflow-common: &airflow-common
     # Airflow's own connection system.
     GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/.gcp/application_default_credentials.json
     GOOGLE_CLOUD_PROJECT: ${BQ_PROJECT_ID:-kestra-sandbox-492709}
+    BQ_PROJECT_ID: ${BQ_PROJECT_ID:-kestra-sandbox-492709}
+    GCLOUD_ADC_PATH: ${GCLOUD_ADC_PATH:-/mnt/c/Users/David/AppData/Roaming/gcloud/application_default_credentials.json}
+    DBT_PROFILES_HOST_PATH: ${DBT_PROFILES_HOST_PATH:-/mnt/c/Users/David/.dbt/profiles.yml}
     # dbt (running from its own venv, see Dockerfile) reads profiles.yml from here:
     DBT_PROFILES_DIR: /opt/airflow/.dbt
   volumes:

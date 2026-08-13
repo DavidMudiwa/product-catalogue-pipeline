@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: price_intelli
+    description: "One row per (product_id, scraped_at), pre-joined with current product identity. Purpose-built source for the Looker Studio price intelligence dashboard and other price intelligence analyses."
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - product_id
+            - scraped_at
+
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+      - name: title
+        tests:
+          - not_null
+      - name: scraped_at
+        tests:
+          - not_null
+      - name: price_min
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: discount_pct
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 100
+      - name: is_multi_offer
+        tests:
+          - accepted_values:
+              values: [true, false]
+              quote: false

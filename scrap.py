@@ -2,6 +2,9 @@ import requests
 import pandas as pd
 import time
 
+
+# docker compose run --rm --entrypoint bash scrapper
+
 #TV_URL = "https://api.takealot.com/rest/v-1-16-0/searches/products,filters,facets,sort_options,breadcrumbs,slots_audience,context,seo,layout"
 URL = " https://api.takealot.com/rest/v-1-17-0/searches/products,filters,facets,sort_options,breadcrumbs,slots_audience,context,seo,layout,related_searches,suggested_filters?sort=Relevance&department_slug=home-kitchen&category_slug=homeware-26000&customer_id=-1495800015&client_id=968079c1-043b-4fec-a936-66f3f36877a3"
 HEADERS = {
