@@ -52,9 +52,10 @@ with DAG(
         task_id="load_webdata",
         image="scrapper-scrapper:latest",
         command=[
-            "uv", "run", "load/loader.py",
+            "uv", "run", "load/loader2.py",
             "--input", "./scraped_data/",
             "--config", "load/config.yaml",
+            "--target", "prod",
         ],
         docker_url="unix://var/run/docker.sock",
         auto_remove="success",

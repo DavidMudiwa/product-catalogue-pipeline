@@ -1,6 +1,7 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
+from docker.types import Mount
 
 with DAG(
     dag_id="get_data",
@@ -13,7 +14,7 @@ with DAG(
 
     get_webdata = DockerOperator(
         task_id="get_webdata",
-        image="scrapper-scrapper:latest",  # <-- name of your app container's image
+        image="scrapper-scrapper:latest",  
         command=[
             "uv", "run", "extract/run_scraper.py",
             "--config", "extract/categories.yml",
@@ -21,8 +22,16 @@ with DAG(
             "--delay", "2.0",
             "--delay-between-categories", "5.0"
         ],
-        docker_url="unix://var/run/docker.sock",  # Airflow talks to host Docker
+        docker_url="unix://var/run/docker.sock",  
         auto_remove="success",
         mount_tmp_dir=False,
         network_mode="scrapper_default",
+        mounts=[
+            Mount(
+                source="/home/david/scrapper/scraped_data",
+                target="/app/scraped_data",  
+                type="bind",
+            )
+        ],
+
     )
