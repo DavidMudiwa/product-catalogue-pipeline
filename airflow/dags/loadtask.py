@@ -40,7 +40,7 @@ GCP_CREDS_CONTAINER_PATH = "/opt/airflow/.gcp/application_default_credentials.js
 
 
 with DAG(
-    dag_id="test_load",
+    dag_id="loadtoBQ",
     description="Test BigQuery loader independently",
     start_date=datetime(2026, 1, 1),
     schedule="@once",

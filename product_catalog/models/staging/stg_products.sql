@@ -9,7 +9,7 @@
     )
 {% else %}
     with raw as (
-        select * from {{ source('ecom_products', 'raw_products') }}
+        select * from {{ source('dev_products', 'products') }}
     )
 {% endif %}
 

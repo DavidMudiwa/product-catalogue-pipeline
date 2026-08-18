@@ -2,7 +2,7 @@ categories:
   - name: TVs
     department_slug: tv-audio-video
     category_slug: tvs-25953
-
+ 
   - name: Smart Watches
     department_slug: cellular-gps
     category_slug: smart-watches-27389
@@ -54,3 +54,4 @@ categories:
   - name: Small Kitchen Appliances
     department_slug: home-kitchen
     category_slug: small-kitchen-appliances-25739
+  

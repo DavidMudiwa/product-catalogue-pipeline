@@ -1,17 +1,21 @@
 import duckdb
 
 conn = duckdb.connect("dev.duckdb")
-model = 'products_raw.fct_price_snapshots'
 
-#print(conn.execute("SHOW SCHEMAS").fetchall())
-print(conn.execute("SHOW ALL TABLES").fetchdf())
-#print("\nSchema:")
-#print(conn.execute(f"DESCRIBE {model}").fetchdf())
+# ---------------------------------------------------------------------------
+# 1. Show all schemas
+# ---------------------------------------------------------------------------
+print("=" * 50)
+print("SCHEMAS")
+print("=" * 50)
+print(conn.execute("SHOW SCHEMAS").fetchdf().to_string(index=False))
 
-# -----------------------------------------------------------------------------
-# Sample records
-# -----------------------------------------------------------------------------
-print("\nFirst 10 rows:")
-print(conn.execute(f"SELECT COUNT(*) FROM {model} LIMIT 10").fetchdf())
+# ---------------------------------------------------------------------------
+# 2. Show all tables (with schema)
+# ---------------------------------------------------------------------------
+print("\n" + "=" * 50)
+print("TABLES")
+print("=" * 50)
+print(conn.execute("SHOW ALL TABLES").fetchdf().to_string(index=False))
 
 conn.close()

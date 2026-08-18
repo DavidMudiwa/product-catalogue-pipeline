@@ -31,8 +31,10 @@ services:
       # Scraper output and checkpoints persist on the host across container
       # runs, instead of being lost when the container exits.
       - ./scraped_data:/app/scraped_data
+      - ./extract:/app/extract
       - ./.checkpoints:/app/.checkpoints
 
       # dbt's local dev database persists across runs too, rather than
       # rebuilding from the seed every single time.
       - ./product_catalog/dev.duckdb:/app/product_catalog/dev.duckdb
+      - ./product_catalog/models:/app/product_catalog/models

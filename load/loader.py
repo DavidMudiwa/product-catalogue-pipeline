@@ -1,5 +1,5 @@
 """
-Loads Takealot scraper CSV output into BigQuery.
+Loads Takealot scraper CSV output into BigQuery(prod only).
 
 Design:
   - Raw CSVs land untouched into a RAW table (explicit schema, no autodetect).

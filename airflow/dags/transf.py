@@ -74,7 +74,7 @@ with DAG(
         task_id="dbt_build",
         image="scrapper-scrapper:latest",
         working_dir="/app",
-        idcommand=[
+        command=[
             "sh", "-c",
             f"dbt deps --project-dir {DBT_PROJECT_DIR} "
             f"&& dbt build --project-dir {DBT_PROJECT_DIR} --target prod",

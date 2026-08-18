@@ -3,7 +3,7 @@ from airflow import DAG
 from airflow.providers.docker.operators.docker import DockerOperator
 
 with DAG(
-    dag_id="get_webdata2",
+    dag_id="get_data",
     description="Scrape product data from ecom site",
     start_date=datetime(2026, 1, 1),
     schedule="@once",
@@ -18,7 +18,6 @@ with DAG(
             "uv", "run", "extract/run_scraper.py",
             "--config", "extract/categories.yml",
             "--output-dir", "scraped_data",
-            "--max-pages", "1",
             "--delay", "2.0",
             "--delay-between-categories", "5.0"
         ],
