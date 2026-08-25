@@ -33,6 +33,7 @@ import sys
 import tempfile
 import time
 import uuid
+import re
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -693,6 +694,24 @@ def write_chunk_csv(df: pd.DataFrame, source_file: str, loaded_at: str, tmp_dir:
     df = df.copy()
     df["_source_file"] = Path(source_file).name
     df["_loaded_at"] = loaded_at
+
+    # Normalize offer_id: convert whole-number float strings to integers.
+    # "213190100.0" -> 213190100, nulls preserved, real decimals (123.5) fail.
+    if "offer_id" in df.columns:
+        def _normalize_offer_id(val):
+            if pd.isna(val):
+                return pd.NA
+            s = str(val).strip()
+            # Match whole-number float strings: digits, dot, single zero
+            if re.fullmatch(r"\d+\.0", s):
+                return int(float(s))
+            # Already a clean integer (or integer string)
+            try:
+                return int(float(s)) if float(s) == int(float(s)) else val
+            except (ValueError, TypeError):
+                return val
+        df["offer_id"] = df["offer_id"].apply(_normalize_offer_id)
+
     # column order must match RAW_SCHEMA for a schema-matched load
     ordered_cols = [f.name for f in RAW_SCHEMA]
     df = df[ordered_cols]
